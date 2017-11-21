@@ -1,3 +1,5 @@
+#include "main.h"
+#include "funkce.h"
 #define DEF_SIZE 8
 
 
