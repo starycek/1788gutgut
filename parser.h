@@ -5,10 +5,13 @@
 #define TRUE 1
 #define FALSE 0
 
+#define SYN_ERR 1
 #define LEX_ERR 2
 
 #define ID 0
 #define TYPE 0
+#define INT 0
+#define DOUBLE 0
 
 FILE *source = NULL;
 char *token = NULL;
