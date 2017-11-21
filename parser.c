@@ -4,12 +4,12 @@ int des_exp(){
   return TRUE;
 }
 
-int des_par(){
+int des_in(){
   if(GetNextToken()) return LEX_ERR;
   if(strcmp(token, ")")){ // 23
     return TRUE;
   } else if(strcmp(token, ",")){ // 22
-    type = GetNextToken();
+    int type = GetNextToken();
     if(type) return LEX_ERR;
     return (((type == ID) || (type == DOUBLE) || (type == INT)) && des_in());
   }
@@ -78,7 +78,7 @@ int des_stat(){
   } else if(strcmp(token, "print")){ // 6
     return (des_exp());
   } else if(strcmp(token, "input")){ // 7
-    return (des_TTYPE == ID);
+    return (des_TTYPE() == ID);
   } else if(strcmp(token, "if")){ // 8
     return (des_exp() && des_KEYWORD("then") && des_KEYWORD("\n") && des_if_list());
   } else if(strcmp(token, "do")){ // 14
@@ -120,7 +120,7 @@ int des_if_list(){
     return (des_KEYWORD("if"));
   } else if(strcmp(token, "dim") || (type == ID) || strcmp(token, "print") || strcmp(token, "input") || strcmp(token, "if") || strcmp(token, "do") || strcmp(token, "return")){ // 9
     return (des_stat() && des_KEYWORD("\n") && des_if_list());
-  } else if(strcmp(token, "else"){ // 11
+  } else if(strcmp(token, "else")){ // 11
     return (des_KEYWORD("\n") && des_else_list());
   }
   return FALSE;
