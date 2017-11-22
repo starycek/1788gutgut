@@ -1,5 +1,5 @@
 typedef struct{
-	char *string
+	char *str;
 	int lenght;
 	int size;
 } string;

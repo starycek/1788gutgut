@@ -1,11 +1,16 @@
-#include "main.h"
+#include "stdio.h"
 #include "funkce.h"
+#include <stdio.h>
+#include <ctype.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
 #define DEF_SIZE 8
 
 
 
 int String_Init(string *s){
-	
+
 	s->str = (char *) malloc(DEF_SIZE);
 	if(s->str == NULL) return EXIT_FAILURE;
 	s->str[0]='\0';
@@ -15,9 +20,9 @@ int String_Init(string *s){
 }
 int String_Add_Char(string *string, char c){
 	if(string->lenght +1 >= string->size){
-		string->str = (char *) realloc(string->str, string->lenght + DEF_SIZE)
+		string->str = (char *) realloc(string->str, string->lenght + DEF_SIZE);
 		if(string->str == NULL) return EXIT_FAILURE;
-		string->size + DEF_SIZE;
+		string->size =string->lenght + DEF_SIZE;
 	}
 	string->str[string->lenght] = c;
 	string->lenght++;
@@ -26,9 +31,9 @@ int String_Add_Char(string *string, char c){
 }
 int String_Add_Char_Lower(string *string, char c){
 	if(string->lenght +1 >= string->size){
-		string->str = (char *) realloc(string->str, string->lenght + DEF_SIZE)
+		string->str = (char *) realloc(string->str, string->lenght + DEF_SIZE);
 		if(string->str == NULL) return EXIT_FAILURE;
-		string->size + DEF_SIZE;
+		string->size =string->lenght + DEF_SIZE;
 	}
 	string->str[string->lenght] = tolower(c);
 	string->lenght++;
