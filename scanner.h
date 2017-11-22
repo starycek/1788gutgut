@@ -1,5 +1,3 @@
-#include "main.h"
-#include "funkce.h"
 
 //OPERATORY
 #define DOUBDIV 10 // '/'
@@ -43,12 +41,11 @@
 #define LENGHT 53
 #define LOOP 54
 #define PRINT 55
-#define RETURN 56
+#define RETUNR 56
 #define SCOPE 57
 #define STRENK 58 //string
 #define SUBSTRA 59 //substr
 #define THEN 58
 #define WHIL 59 //while
 
-int getNextToken(string *s)
-#endif
+//#endif

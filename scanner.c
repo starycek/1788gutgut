@@ -1,17 +1,32 @@
 #include "scanner.h"
-#include "main.c"
 #include "string.h"
 #include "funkce.c"
+//#include "parser.c"
+//#include "parser.h"
+
+#include <stdio.h>
+#include <ctype.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
 
 
-int getNextToken(string *s){
+FILE *source;
+int GetNextToken(){
+string *s = NULL;
 char c;
 int state=0;
 int radek=1;
-str
+String_Init (s);
+String_Clear(s);
 
+printf("%s",s->str);
 while(1){
   c=getc(source);
+  if(feof(source)){
+
+    return 0;
+  }
   if (c=='\n')
     radek++;
 
@@ -21,146 +36,143 @@ while(1){
       state=0;
     }
     else if(c=='/'){
-      return doubdiv;
+      return DOUBDIV;
     }
     else if(isalpha(c)||c=='_'){
-      str
+      String_Add_Char_Lower(s,c);
       state=2;
     }
     else if(isdigit(c)){
-      str
+      String_Add_Char_Lower(s,c);
       state=3;
     }
     else if (c=='-'){
-      return sub;
+      return SUB;
     }
     else if (c=='\\'){
       state=1;
     }
       else if (c=='*'){
-      return mult;
+      return MULT;
     }
       else if (c=='+'){
-      return add;
+      return ADD;
     }
       else if (c=='!'){
-          return stringstart;
+          return STRINGSTART;
     }
       else if (c=='='){
-          return eql;
+          return EQL;
     }
       else if(c=='>'){
       if((c=getc(source))=='='){
-        return greq;
+        return GREQ;
       } else{
-      return greatr;
+      return GREATR;
       }
       }
       else if(c=='<'){
       if((c=getc(source))=='='){
-        return leseq;
+        return LESEQ;
       } else if((c=getc(source))=='>'){
-      return different;
+      return DIFFERENT;
       }else{
-      return lesser;
+      return LESSER;
       }
     }
     else if(c==','){
-      return comm;
+      return COMM;
     }
     else if(c==';'){
-      return semicol;
+      return SEMICOL;
     }
     else if(c==')'){
-      return rightbrac;
+      return RIGHTBRAC;
     }
     else if(c=='('){
-      return leftbrac;
-      }
-       else if(c=='\''){
-      return comment;
+      return LEFTBRAC;
       }
     else if(c=='"'){
       state=4;
     }
     else{
-      return 1
+      return 1;
     }
   break;
-  }
+
   case 1:
-    if(c=='\'')}
+    if(c=='\''){
       state=6;
     }else if(isdigit(c)){
-    return intdiv;
+    return INTDIV;
     }else{
     return 1;
     }
     break;
   case 2:
     if(isalnum(c) || c=='_'){
-      str
+      String_Add_Char_Lower(s,c);
       break;
     }else{
       ungetc(c,source);
     if(strcmp(s->str,"as")==0){
-      return as;
+      return AS;
     }else if(strcmp(s->str,"asc")==0){
-      return asc;
+      return ASC;
     }else if(strcmp(s->str,"declare")==0){
-      return as;
+      return DECLARE;
     }else if(strcmp(s->str,"dim")==0){
-      return dim;
+      return DIM;
     }else  if(strcmp(s->str,"do")==0){
-      return do;
+      return DOO;
     }else if(strcmp(s->str,"double")==0){
-      return double;
+      return DOUBL;
     }else if(strcmp(s->str,"else")==0){
-      return esle;
+      return ESLE;
     }else if(strcmp(s->str,"end")==0){
-      return edn;
+      return EDN;
     }else  if(strcmp(s->str,"chr")==0){
-      return chr;
+      return CHR;
     }else if(strcmp(s->str,"function")==0){
-      return function;
+      return FUNCTION;
     }else if(strcmp(s->str,"if")==0){
-      return fi;
+      return FI;
     }else if(strcmp(s->str,"input")==0){
-      return input;
+      return INPUT;
     }else  if(strcmp(s->str,"integer")==0){
-      return integer;
+      return INTEGER;
     }else if(strcmp(s->str,"lenght")==0){
-      return lenght;
+      return LENGHT;
     }else if(strcmp(s->str,"loop")==0){
-      return loop;
+      return LOOP;
     }else if(strcmp(s->str,"print")==0){
-      return print;
+      return PRINT;
     }else  if(strcmp(s->str,"return")==0){
-      return retunr;
+      return RETUNR;
     }else if(strcmp(s->str,"scope")==0){
-      return scope;
+      return SCOPE;
     }else if(strcmp(s->str,"string")==0){
-      return string;
+      return STRENK;
     }else if(strcmp(s->str,"substr")==0){
-      return substr;
+      return SUBSTRA;
     }else  if(strcmp(s->str,"then")==0){
-      return then;
+      return THEN;
     }else if(strcmp(s->str,"while")==0){
-      return whil;
+      return WHIL;
     }else{
-    return id;
+    return ID;
     }
     break;
   case 3:
     if (isdigit(c)){
-      str
+      String_Add_Char_Lower(s,c);
       state=3;
     }else if(c=='.'){
     state=7;
     }else if (c=='+' ||c=='-' ||c=='*' ||c=='/' ||c=='\\' ||c==' '){
     state=0;
-    unget(c,source);
-    return num;
+    ungetc(c,source);
+    return INTNUM;
     }else{
     return 1;
     }
@@ -169,42 +181,45 @@ while(1){
     if(c=='"'){
       return TEXT;
     }else{
-    case 4;
+    String_Add_Char(s,c);
+    state= 4;
     }
     break;
   case 5:
     if(c=='\n'){
       return COMMENT;
     }else{
-    case 5;
+    state= 5;
     }
     break;
   case 6:
     if(c=='\''){
-      case 8;
+      state= 8;
     }else{
-     case 6;
+     state= 6;
     }
     break;
   case 8:
     if(c=='\\'){
       return COMMENT;
     }else{
-    case 6;
+    state= 6;
     }
-    break
+    break;
   case 7:
     if(isdigit(c)){
-      case 7;
+      state= 7;
     }else if(c=='+'|| c=='-' || c=='*' || c=='/' || c=='\\'){
     state=0;
     ungetc(c,source);
-    return NUM
+    return DOUBNUM;
     }else{
     return 1;
     }
 break;
     }
+}
+}
 }
 
 
