@@ -41,7 +41,7 @@ int String_Add_Char_Lower(string *string, char c){
 	return EXIT_SUCCESS;
 }
 int String_Copy(string *string1,string *string2){
-	int lenght2 = string2->lenght
+	int lenght2 = string2->lenght;
 	if(lenght2 >= string1->size){
 		string1->str = (char *) realloc(string1->str,lenght2 + 1);
 		if(string1->str == NULL) return EXIT_FAILURE;
