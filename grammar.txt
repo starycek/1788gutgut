@@ -1,0 +1,34 @@
+<prog>      ->  scope <sc-list><prog>
+<sc-list>   ->  <stat>\n<sc-list>
+<sc-list>   ->  end scope
+<stat>      ->  dim <def>
+<def>       ->  ID as TYPE
+<stat>      ->  print <exp>
+<stat>      ->  input ID
+<stat>      ->  if <exp> then\n<if-list>
+<if-list>   ->  <stat>\n<if-list>
+<if-list>   ->  end if
+<if-list>   ->  else\n<else-list>
+<else-list> ->  <stat>\n<else-list>
+<else-list> ->  end if
+<stat>      ->  do while <exp>\n<loop-list>
+<loop-list> ->  <stat>\n<loop-list>
+<loop-list> ->  loop
+<stat>      ->  ID=<ass>
+<ass>       ->  <exp>
+<ass>       ->  ID(<in-list>
+<in-list>   ->  )
+<in-list>   ->  TERM<in>
+<in>        ->  ,TERM<in>
+<in>        ->  )
+<stat>      ->  return TERM
+<prog>      ->  declare function ID(<par-list> as TYPE<prog>
+<par-list>  ->  )
+<par-list>  ->  <def><par>
+<par>       ->  ,<def><par>
+<par>       ->  )
+<prog>      ->  function ID<par-list> as TYPE\n<func-list><prog>
+<func-list> ->  <stat>\n<func-list>
+<func-list> ->  end function
+<prog>      ->  EOF
+<exp>       ->  VÝRAZ [precedenční analýza]
