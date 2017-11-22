@@ -40,6 +40,16 @@ int String_Add_Char_Lower(string *string, char c){
 	string->str[string->lenght] = '\0';
 	return EXIT_SUCCESS;
 }
+int String_Copy(string *string1,string *string2){
+	int lenght2 = string2->lenght
+	if(lenght2 >= string1->size){
+		string1->str = (char *) realloc(string1->str,lenght2 + 1);
+		if(string1->str == NULL) return EXIT_FAILURE;
+	}
+	strcpy(string1->str,string2->str);
+	string1->lenght=lenght2;
+	return EXIT_SUCCESS;
+}
 void String_Delete_Char(string *string){
 	string->lenght--;
 	string->str[string->lenght] = '\0';
