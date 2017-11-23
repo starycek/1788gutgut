@@ -1,130 +1,126 @@
 #include "scanner.h"
 #include "string.h"
-#include "funkce.c"
-//#include "parser.c"
-//#include "parser.h"
-
 #include <stdio.h>
-#include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
-
+#include <ctype.h>
 
 FILE *source;
-int GetNextToken(){
-char c;
+int GetNextToken(char* token){
+char *c=NULL;
+char *p;
+p="\0";
 int state=0;
 int radek=1;
 int i=0;
-token[i]='\0';
+token[i]=*p;
 while(1){
-  c=getc(source);
+  *c=getc(source);
   if(feof(source)){
 
     return 0;
   }
-  if (c=='\n')
+  if (*c=='\n')
     radek++;
 
     switch(state){
   case 0:
-    if (isspace(c)){
+    if (isspace(*c)){
       state=0;
     }
-    else if(c=='/'){
-      token[i]=c;
+    else if(*c=='/'){
+      token[i]=*c;
       i++;
       return DOUBDIV;
     }
-    else if(isalpha(c)||c=='_'){
-      token[i]=c;
+    else if(isalpha(*c)||*c=='_'){
+      token[i]=*c;
       i++;
       state=2;
     }
-    else if(isdigit(c)){
-      token[i]=c;
+    else if(isdigit(*c)){
+      token[i]=*c;
       i++;
       state=3;
     }
-    else if (c=='-'){
-      token[i]=c;
+    else if (*c=='-'){
+      token[i]=*c;
       i++;
       return SUB;
     }
-    else if (c=='\\'){
-      token[i]=c;
+    else if (*c=='\\'){
+      token[i]=*c;
       i++;
       state=1;
     }
-      else if (c=='*'){
-      token[i]=c;
+      else if (*c=='*'){
+      token[i]=*c;
       i++;
       return MULT;
     }
-      else if (c=='+'){
-      token[i]=c;
+      else if (*c=='+'){
+      token[i]=*c;
       i++;
       return ADD;
     }
-      else if (c=='!'){
-      token[i]=c;
+      else if (*c=='!'){
+      token[i]=*c;
       i++;
       return STRINGSTART;
     }
-      else if (c=='='){
-      token[i]=c;
+      else if (*c=='='){
+      token[i]=*c;
       i++;
       return EQL;
     }
-      else if(c=='>'){
-      token[i]=c;
+      else if(*c=='>'){
+      token[i]=*c;
       i++;
-      if((c=getc(source))=='='){
-        token[i]=c;
+      if((*c=getc(source))=='='){
+        token[i]=*c;
         i++;
         return GREQ;
       } else{
       return GREATR;
       }
       }
-      else if(c=='<'){
-        token[i]=c;
+      else if(*c=='<'){
+        token[i]=*c;
         i++;
-      if((c=getc(source))=='='){
-        token[i]=c;
+      if((*c=getc(source))=='='){
+        token[i]=*c;
         i++;
         return LESEQ;
-      } else if((c=getc(source))=='>'){
-        token[i]=c;
+      } else if((*c=getc(source))=='>'){
+        token[i]=*c;
         i++;
         return DIFFERENT;
       }else{
       return LESSER;
       }
     }
-    else if(c==','){
-      token[i]=c;
+    else if(*c==','){
+      token[i]=*c;
       i++;
       return COMM;
     }
-    else if(c==';'){
-      token[i]=c;
+    else if(*c==';'){
+      token[i]=*c;
       i++;
       return SEMICOL;
     }
-    else if(c==')'){
-      token[i]=c;
+    else if(*c==')'){
+      token[i]=*c;
       i++;
       return RIGHTBRAC;
     }
-    else if(c=='('){
-      token[i]=c;
+    else if(*c=='('){
+      token[i]=*c;
       i++;
       return LEFTBRAC;
       }
-    else if(c=='"'){
-      token[i]=c;
+    else if(*c=='"'){
+      token[i]=*c;
       i++;
       state=4;
     }
@@ -134,24 +130,24 @@ while(1){
   break;
 
   case 1:
-    if(c=='\''){
-      token[i]=c;
+    if(*c=='\''){
+      token[i]=*c;
       i++;
       state=6;
-    }else if(isdigit(c)){
-    ungetc(c,source);
+    }else if(isdigit(*c)){
+    ungetc(*c,source);
     return INTDIV;
     }else{
     return 1;
     }
     break;
   case 2:
-    if(isalnum(c) || c=='_'){
-      token[i]=c;
+    if(isalnum(*c) || *c=='_'){
+      token[i]=*c;
       i++;
       break;
     }else{
-      token[i]=c;
+      token[i]=*c;
       i++;
     if(strcmp(token,"as")==0){
       return AS;
@@ -202,62 +198,62 @@ while(1){
     }
     break;
   case 3:
-    if (isdigit(c)){
-      token[i]=tolower(c);
+    if (isdigit(*c)){
+      token[i]=tolower(*c);
       i++;;
       state=3;
-    }else if(c=='.'){
-      token[i]=c;
+    }else if(*c=='.'){
+      token[i]=*c;
       i++;
     state=7;
-    }else if (c=='+' ||c=='-' ||c=='*' ||c=='/' ||c=='\\' ||c==' '){
+    }else if (*c=='+' ||*c=='-' ||*c=='*' ||*c=='/' ||*c=='\\' ||*c==' '){
     state=0;
-    ungetc(c,source);
+    ungetc(*c,source);
     return INTNUM;
     }else{
     return 1;
     }
     break;
   case 4:
-    if(c=='"'){
-      token[i]=c;
+    if(*c=='"'){
+      token[i]=*c;
       i++;
       return TEXT;
     }else{
-    token[i]=c;
+    token[i]=*c;
     i++;
     state= 4;
     }
     break;
   case 5:
-    if(c=='\n'){
+    if(*c=='\n'){
       return COMMENT;
     }else{
     state= 5;
     }
     break;
   case 6:
-    if(c=='\''){
+    if(*c=='\''){
       state= 8;
     }else{
      state= 6;
     }
     break;
   case 8:
-    if(c=='\\'){
+    if(*c=='\\'){
       return COMMENT;
     }else{
     state= 6;
     }
     break;
   case 7:
-    if(isdigit(c)){
-      token[i]=c;
+    if(isdigit(*c)){
+      token[i]=*c;
       i++;
       state= 7;
-    }else if(c=='+'|| c=='-' || c=='*' || c=='/' || c=='\\'){
+    }else if(*c=='+'|| *c=='-' || *c=='*' || *c=='/' || *c=='\\'){
     state=0;
-    ungetc(c,source);
+    ungetc(*c,source);
     return DOUBNUM;
     }else{
     return 1;
