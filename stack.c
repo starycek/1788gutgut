@@ -1,3 +1,16 @@
+/*
+
+Projekt z předmětů IFJ a IAL
+Překladač jazyka IFJ17
+
+stack.c
+
+Autoři:
+
+Daniel Švub (xsvubd00)
+
+*/
+
 #include "stack.h"
 
 int STACK_SIZE = MAX_STACK;
@@ -69,6 +82,7 @@ int stackReduce (tStack* s){
   }
   free(temp);
   if(top == PRE_LEFT){
+    stackPop(s);
     stackPush(s, PRE_NON);
     return TRUE;
   } else return FALSE;

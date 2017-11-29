@@ -1,3 +1,17 @@
+/*
+
+Projekt z předmětů IFJ a IAL
+Překladač jazyka IFJ17
+
+parser.h
+
+Autoři:
+
+Daniel Švub (xsvubd00)
+Jan Zwierz (xzwier00)
+
+*/
+
 // Knihovny:
 
 #include <stdio.h>
@@ -11,20 +25,20 @@
 
 // Chyby:
 
-#define SYN_ERR 1
-#define LEX_ERR 2
+#define LEX_ERR 1
+#define SYN_ERR 2
 
 // Typy tokenů:
 
-#define ID 0
-#define TYPE 0
-#define INT 0
-#define DOUBLE 0
+#define TYPE 69
 
 // Globální proměnné:
 
 FILE *source = NULL;
 char token[] = "\0";
+char transfer[50];
+int error;
+int row;
 
 // Rekurzivní sestup:
 
@@ -39,7 +53,7 @@ int des_func_list();
 int des_if_list();
 int des_else_list();
 int des_loop_list();
-int des_stat();
+int des_stat(int type);
 int des_def();
 int des_ass();
 int des_par_list();
@@ -144,3 +158,4 @@ PRE_TAB[7][7] = 0;
 // Zásobník:
 
 #include "stack.c"
+#include "scanner.c"

@@ -1,3 +1,16 @@
+/*
+
+Projekt z předmětů IFJ a IAL
+Překladač jazyka IFJ17
+
+stack.h
+
+Autoři:
+
+Daniel Švub (xsvubd00)
+
+*/
+
 #define MAX_STACK 20
 
 int STACK_SIZE;

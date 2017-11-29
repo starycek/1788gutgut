@@ -1,3 +1,16 @@
+/*
+
+Projekt z předmětů IFJ a IAL
+Překladač jazyka IFJ17
+
+scanner.h
+
+Autoři:
+
+Daniel Poisl (xpoisl00)
+Filip Weigel (xweige01)
+
+*/
 
 //OPERATORY
 #define DOUBDIV 10 // '/'
@@ -30,7 +43,7 @@
 #define DECLARE 42
 #define DIM 43
 #define DOO 44  //do
-#define DOUBL 45 //double
+#define DOUBLE 45 //double
 #define ESLE 46
 #define EDN 47 //end
 #define CHR 48
@@ -43,9 +56,10 @@
 #define PRINT 55
 #define RETUNR 56
 #define SCOPE 57
-#define STRENK 58 //string
+#define STRING 58 //string
 #define SUBSTRA 59 //substr
 #define THEN 58
 #define WHIL 59 //while
+#define EOL 62
 
 //#endif
