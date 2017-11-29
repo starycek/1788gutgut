@@ -74,14 +74,21 @@ void stackPush (tStack* s, int c) {
 int stackReduce (tStack* s){
   tStack *temp = malloc(sizeof(tStack));
   stackInit(temp);
-  int top = stackTop(s);
-  while((top != PRE_LEFT) && (top != PRE_END)){
-    stackPush(temp, top);
-    stackPop(s);
-    top = stackTop(s);
+  int top = stackTop(s); // Hodnota na vrcholu
+  int prev = 10; // Předchozí hodnota na vrcholu
+  while((top != PRE_LEFT) && (top != PRE_END)){ // Redukce
+    if(((top < 4) && (prev == 8)) || ((prev < 4) && (top == 8)) || ((prev == 5) && (top == 8)) || ((prev < 8) && (top == 4)) || (top == 6) || ((prev == 10) && (top == 8))){ // Ověření pravidel PSA
+      stackPush(temp, top);
+      stackPop(s);
+      prev = top;
+      top = stackTop(s);
+    } else {
+      free(temp);
+      return FALSE;
+    }
   }
   free(temp);
-  if(top == PRE_LEFT){
+  if((top == PRE_LEFT) && (prev > 3)){ // Korektní začátek výrazu
     stackPop(s);
     stackPush(s, PRE_NON);
     return TRUE;

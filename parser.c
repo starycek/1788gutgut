@@ -32,10 +32,10 @@ int des_exp(int ass){
   tStack *stack = malloc(sizeof(tStack));
   stackInit(stack);
   stackPush(stack, PRE_END);
-  int top;
-  int input;
+  int top = 0;
+  int input = ass;
   top = stackTopTerm(stack, 0); // Nalezení nejvyššího terminálu v zásobníku
-  if(!ass){
+  if(ass == 10){
     if(pre_next(&input) == 1){ // Další token
       if(!error) error = LEX_ERR;
       free(stack);
@@ -43,7 +43,6 @@ int des_exp(int ass){
     }
   }
   do{
-    //printf("token %s\n", token);
     if(PRE_TAB[top][input] == 0){ // Chyba
       free(stack);
       return FALSE;
@@ -55,7 +54,7 @@ int des_exp(int ass){
         free(stack);
         return LEX_ERR;
       }
-      if(ass && (input == PRE_RELOPS)){
+      if((ass != 10) && (input == PRE_RELOPS)){
         free(stack);
         return FALSE; // V přiřazení nesmí být relační operátor
       }
@@ -64,24 +63,28 @@ int des_exp(int ass){
         free(stack);
         return FALSE;
       }
-      if(input != PRE_END){
+      /*if(input != PRE_END){
         if(pre_next(&input) == 1){ // Další token
           if(!error) error = LEX_ERR;
           free(stack);
           return LEX_ERR;
         }
+        if(input == prev){ // Dva tokeny téhož typu za sebou
+          free(stack);
+          return FALSE;
+        }
         if(ass && (input == PRE_RELOPS)){
           free(stack);
           return FALSE; // V přiřazení nesmí být relační operátor
         }
-      }
+      }*/
     } else if(PRE_TAB[top][input] == 3){ // =
       if(pre_next(&input) == 1){ // Další token
         if(!error) error = LEX_ERR;
         free(stack);
         return LEX_ERR;
       }
-      if(ass && (input == PRE_RELOPS)){
+      if((ass != 10) && (input == PRE_RELOPS)){
         free(stack);
         return FALSE; // V přiřazení nesmí být relační operátor
       }
@@ -157,7 +160,8 @@ int des_par_list(){
 }
 
 int des_ass(){
-  int type = getNextToken();
+  int input = 10;
+  int type = pre_next(&input);
   if(type == 1){
     if(!error) error = LEX_ERR;
     return FALSE;
@@ -165,7 +169,7 @@ int des_ass(){
   if(type == ID){ // 19
     return (des_KEYWORD("(") && des_in_list());
   } else { // 18
-    return des_exp(TRUE);
+    return des_exp(input);
   }
   return FALSE;
 }
@@ -192,13 +196,13 @@ int des_stat(int type){
   } else if(type == ID){ // 17
     return (des_KEYWORD("=") && des_ass());
   } else if(!strcmp(token, "print")){ // 6
-    return (des_exp(FALSE));
+    return (des_exp(10));
   } else if(!strcmp(token, "input")){ // 7
     return (des_TTYPE() == ID);
   } else if(!strcmp(token, "if")){ // 8
-    return (des_exp(FALSE) && des_KEYWORD("then") && des_KEYWORD("\n") && des_if_list());
+    return (des_exp(10) && des_KEYWORD("then") && des_KEYWORD("\n") && des_if_list());
   } else if(!strcmp(token, "do")){ // 14
-    return (des_KEYWORD("while") && des_exp(FALSE) && des_KEYWORD("\n") && des_loop_list());
+    return (des_KEYWORD("while") && des_exp(10) && des_KEYWORD("\n") && des_loop_list());
   } else if(!strcmp(token, "return")){ // 24
     type = getNextToken();
     if(type == 1){
