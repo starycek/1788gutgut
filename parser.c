@@ -63,21 +63,6 @@ int des_exp(int ass){
         free(stack);
         return FALSE;
       }
-      /*if(input != PRE_END){
-        if(pre_next(&input) == 1){ // Další token
-          if(!error) error = LEX_ERR;
-          free(stack);
-          return LEX_ERR;
-        }
-        if(input == prev){ // Dva tokeny téhož typu za sebou
-          free(stack);
-          return FALSE;
-        }
-        if(ass && (input == PRE_RELOPS)){
-          free(stack);
-          return FALSE; // V přiřazení nesmí být relační operátor
-        }
-      }*/
     } else if(PRE_TAB[top][input] == 3){ // =
       if(pre_next(&input) == 1){ // Další token
         if(!error) error = LEX_ERR;

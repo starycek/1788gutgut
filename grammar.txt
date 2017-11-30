@@ -31,4 +31,4 @@
 <func-list> ->  <stat>\n<func-list>
 <func-list> ->  end function
 <prog>      ->  EOF
-<exp>       ->  VÝRAZ [precedenční analýza]
+<exp>       ->  VÝRAZ [precedenční syntaktická analýza]
