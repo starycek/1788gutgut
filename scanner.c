@@ -82,7 +82,7 @@ int getNextToken(){
         else if (c=='!'){
         token[i]=c;
         i++;
-        return STRINGSTART;
+        state=10;
       }
         else if (c=='='){
         token[i]=c;
@@ -155,8 +155,6 @@ int getNextToken(){
 
     case 1:
       if(c=='\''){
-        token[i]=c;
-        i++;
         state=6;
       }else if(isdigit(c)){
       ungetc(c,source);
@@ -248,7 +246,8 @@ int getNextToken(){
       if(c=='"'){
         token[i]=c;
         i++;
-        return TEXT;
+        token[i]='\0';
+        return INPUTSTR;
       }else{
       token[i]=c;
       i++;
@@ -296,6 +295,17 @@ int getNextToken(){
         ungetc(t, source);
         break;
       }
+    case 10:
+      radek++;
+      if(c=='"'){
+        state=4;
+        token[i]=c;
+        i++;
+      }
+      else{
+        return 1;
+      }
+      break;
       if(feof(source)){
         token[0] = '\0';
         return EOL;

@@ -33,9 +33,9 @@ Filip Weigel (xweige01)
 #define ID 30 // 'identifikator'
 #define TEXT 31 // 'string'
 #define INTNUM 32 // 'integer'
-#define COMMENT 33 // 'komentar'
+//#define COMMENT 33 // 'komentar'
 #define DOUBNUM 34 // 'double'
-#define STRINGSTART 35 // 'zacatek stringu'
+#define INPUTSTR 35 // 'zacatek stringu'
 
 //klicova slova
 #define AS 40
