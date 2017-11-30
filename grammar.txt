@@ -22,12 +22,12 @@
 <in>        ->  ,TERM<in>
 <in>        ->  )
 <stat>      ->  return TERM
-<prog>      ->  declare function ID(<par-list> as TYPE<prog>
+<prog>      ->  declare function ID(<par-list> as TYPE\n<prog>
 <par-list>  ->  )
 <par-list>  ->  <def><par>
 <par>       ->  ,<def><par>
 <par>       ->  )
-<prog>      ->  function ID<par-list> as TYPE\n<func-list><prog>
+<prog>      ->  function ID<par-list> as TYPE\n<func-list>\n<prog>
 <func-list> ->  <stat>\n<func-list>
 <func-list> ->  end function
 <prog>      ->  EOF

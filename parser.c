@@ -133,14 +133,15 @@ int des_in_list(){
 }
 
 int des_par(){
-  if(getNextToken() == 1){
+  int type = getNextToken();
+  if(type == 1){
     if(!error) error = LEX_ERR;
     return FALSE;
   }
   if(!strcmp(token, ")")){ // 29
     return TRUE;
   } else if(!strcmp(token, ",")){ // 28
-    return (des_def() && des_par());
+    return (des_def(0) && des_par());
   }
   return FALSE;
 }
@@ -152,7 +153,7 @@ int des_par_list(){
     return FALSE;
   }
   if(type == ID){ // 27
-    return (des_def() && des_par());
+    return (des_def(type) && des_par());
   } else if(!strcmp(token, ")")){ // 26
     return TRUE;
   }
@@ -174,11 +175,13 @@ int des_ass(){
   return FALSE;
 }
 
-int des_def(){
-  int type = getNextToken();
-  if(type == 1){
-    if(!error) error = LEX_ERR;
-    return FALSE;
+int des_def(int type){
+  if(type == 0){
+    type = getNextToken();
+    if(type == 1){
+      if(!error) error = LEX_ERR;
+      return FALSE;
+    }
   }
   if(type == ID){ // 5
     return (des_KEYWORD("as") && (des_TTYPE() == TYPE));
@@ -192,7 +195,7 @@ int des_stat(int type){
     return FALSE;
   }
   if(!strcmp(token, "dim")){ // 4
-    return (des_def());
+    return (des_def(0));
   } else if(type == ID){ // 17
     return (des_KEYWORD("=") && des_ass());
   } else if(!strcmp(token, "print")){ // 6
@@ -206,9 +209,9 @@ int des_stat(int type){
   } else if(!strcmp(token, "return")){ // 24
     type = getNextToken();
     if(type == 1){
-    if(!error) error = LEX_ERR;
-    return FALSE;
-  }
+      if(!error) error = LEX_ERR;
+      return FALSE;
+    }
     return ((type == ID) || (type == DOUBNUM) || (type == INTNUM));
   }
   return FALSE;
@@ -265,7 +268,7 @@ int des_func_list(){
     return FALSE;
   }
   if(!strcmp(token, "end")){ // 32
-    return (des_KEYWORD("function"));
+    return (des_KEYWORD("function")) && des_KEYWORD("\n");
   } else if(!strcmp(token, "dim") || (type == ID) || !strcmp(token, "print") || !strcmp(token, "input") || !strcmp(token, "if") || !strcmp(token, "do") || !strcmp(token, "return")){ // 31
     return (des_stat(type) && des_KEYWORD("\n") && des_func_list());
   }
@@ -317,7 +320,7 @@ int des_prog(){
   if(!strcmp(token, "scope")){ // 1
     return (des_KEYWORD("\n") && des_sc_list() && des_prog());
   } else if(!strcmp(token, "declare")){ // 25
-    return (des_KEYWORD("function") && (des_TTYPE() == ID) && des_KEYWORD("(") && des_par_list() && des_KEYWORD("as") && (des_TTYPE() == TYPE) && des_prog());
+    return (des_KEYWORD("function") && (des_TTYPE() == ID) && des_KEYWORD("(") && des_par_list() && des_KEYWORD("as") && (des_TTYPE() == TYPE) && des_KEYWORD("\n") && des_prog());
   } else if(!strcmp(token, "function")){ // 30
     return ((des_TTYPE() == ID) && des_KEYWORD("(") && des_par_list() && des_KEYWORD("as") && (des_TTYPE() == TYPE) && des_KEYWORD("\n") && des_func_list() && des_prog());
   } else if(!strcmp(token, "\0")){ // 33
