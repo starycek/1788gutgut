@@ -3,7 +3,7 @@
 <sc-list>   ->  end scope
 <stat>      ->  dim <def>
 <def>       ->  ID as TYPE
-<stat>      ->  print <exp>
+<stat>      ->  print <exp>;<out>
 <stat>      ->  input ID
 <stat>      ->  if <exp> then\n<if-list>
 <if-list>   ->  <stat>\n<if-list>
@@ -32,3 +32,5 @@
 <func-list> ->  end function
 <prog>      ->  EOF
 <exp>       ->  VÝRAZ [precedenční syntaktická analýza]
+<out>       ->  <exp>;<out>
+<out>       ->

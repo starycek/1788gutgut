@@ -39,7 +39,7 @@ int des_exp(int ass){
     if(pre_next(&input) == 1){ // Další token
       if(!error) error = LEX_ERR;
       free(stack);
-      return LEX_ERR;
+      return FALSE;
     }
   }
   do{
@@ -52,7 +52,7 @@ int des_exp(int ass){
       if(pre_next(&input) == 1){ // Další token
         if(!error) error = LEX_ERR;
         free(stack);
-        return LEX_ERR;
+        return FALSE;
       }
       if((ass != 10) && (input == PRE_RELOPS)){
         free(stack);
@@ -67,7 +67,7 @@ int des_exp(int ass){
       if(pre_next(&input) == 1){ // Další token
         if(!error) error = LEX_ERR;
         free(stack);
-        return LEX_ERR;
+        return FALSE;
       }
       if((ass != 10) && (input == PRE_RELOPS)){
         free(stack);
@@ -83,6 +83,21 @@ int des_exp(int ass){
   strcpy(transfer, token);
   free(stack);
   return TRUE; // Úspěch PSA
+}
+
+int des_out(){
+  int input = 10;
+  int type = pre_next(&input);
+  if(type == 1){
+    if(!error) error = LEX_ERR;
+    return FALSE;
+  }
+  if(!strcmp(token, "\n")){
+    strcpy(transfer, token);
+    return TRUE;
+  } else {
+    return des_exp(input) && des_KEYWORD(";") && des_out();
+  }
 }
 
 int des_in(){
@@ -184,7 +199,7 @@ int des_stat(int type){
   } else if(type == ID){ // 17
     return (des_KEYWORD("=") && des_ass());
   } else if(!strcmp(token, "print")){ // 6
-    return (des_exp(10));
+    return (des_exp(10) && des_KEYWORD(";") && des_out());
   } else if(!strcmp(token, "input")){ // 7
     return (des_TTYPE() == ID);
   } else if(!strcmp(token, "if")){ // 8
