@@ -233,7 +233,7 @@ int getNextToken(){
         token[i]=c;
         i++;
       state=7;
-      }else if (c=='+' ||c=='-' ||c=='*' ||c=='/' ||c=='\\' ||c==' ' || c=='\n' || c=='=' || c=='<' || c=='>'){
+      }else if (c=='+' ||c=='-' ||c=='*' ||c=='/' ||c=='\\' ||c==' ' || c=='\n' || c=='=' || c=='<' || c=='>' || c==';'){
       state=0;
       ungetc(c,source);
       token[i]='\0';
@@ -295,6 +295,14 @@ int getNextToken(){
         ungetc(t, source);
         break;
       }
+      if(feof(source)){
+        token[0] = '\0';
+        return EOL;
+      }
+      ungetc(t, source);
+      token[0] = c;
+      token[1] = '\0';
+      return EOL;
     case 10:
       radek++;
       if(c=='"'){
@@ -306,15 +314,7 @@ int getNextToken(){
         return 1;
       }
       break;
-      if(feof(source)){
-        token[0] = '\0';
-        return EOL;
-      }
-      ungetc(t, source);
-      token[0] = c;
-      token[1] = '\0';
-      return EOL;
-      }
+    }
   }
 }
 
