@@ -18,6 +18,8 @@ Jan Zwierz (xzwier00)
 #include <stdlib.h>
 #include <string.h>
 
+#include "symtable.c"
+
 // Logické hodnoty:
 
 #define TRUE 1
@@ -27,10 +29,9 @@ Jan Zwierz (xzwier00)
 
 #define LEX_ERR 1
 #define SYN_ERR 2
-
-// Typy tokenů:
-
-#define TYPE 69
+#define DIM_ERR 3
+#define TYP_ERR 4
+#define SEM_ERR 6
 
 // Globální proměnné:
 
@@ -39,6 +40,7 @@ char token[] = "\0";
 char transfer[50];
 int error;
 int row;
+thtable *table;
 
 // Rekurzivní sestup:
 
