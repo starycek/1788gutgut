@@ -1,0 +1,20 @@
+Scanner
+Scanner je v programu využíván na ètení symbolù ze vstupu a následným pøedáním dat parseru, ale provádí i lexikální analýzu. 
+	Scanner je realizován pomocí podmínek, které rozpoznají jednoduché znaky napø. +,-, apro složitìjší výrazy jako napø. klíèová slova  je využito jednotlivých casù. Celkem je ve scanneru použito 10 casù. Každý case slouží k jinému rozpoznávání, ale nìkterý case se skládá i z více casù.
+
+Scanner je volán Parserem. Scanner následnì zaène èíst vstupní kód a zapisuje data na pole charu. Pokud je zjištìna lexikální chyba v zadávaném kódu, je Scanner ukonèen a posílá Parseru hodnotu 1(chyba v programu v rámci lexikální analýzy). Data se poté posílají zpìt Parseru na syntaktickou a semantickou analýzu.  
+
+Case 1: Spustí se pokud je zadán '\' a urèí zda se jedná o celoèíselné dìlení, nebo o komentáø
+Case 2: Rozpoznávání zda se jedná o klíèové slovo jazyka, nebo zda je zadáván identifikátor promìnné, funkce.
+Case 3: Zapisování a urèení zda se jedná o celé èíslo. Pokud je zadána teèka tak se spouští Case 7.
+Case 4: zapisování vstupního øetìzce. zapisování se ukonèí pokud je zadána uvozovka (").
+Case 5: Ète øádkový komentáø a hledá jeho ukonèení pomocí odøádkování v kódu.
+Case 6: Ète blokový komentáø. Po pøeètení apostrofu je spuštìn Case 8.
+Case 7: Ète èísla a zapisuje si jejich hodnotu. Po zadání operátoru je pøíslušná hodnota èísla odeslána Parseru.
+Case 8: Kontroluje zda se po apostrofu nachazí backslash. Pokud ano tak je ukonèen blokový komentáø, pokud ne tak se opìt spouští Case 6.
+Case 9: Ošetøení vícenásobného odøádkování v zadávaném kódu.
+Case 10: Kontrola jestli se po vykøièníku zadává vstupní øetìzec. Pokud je za vykøièníkem cokoliv jiného než uvozovka tak je vrácena lexikální chyba kódu.
+
+Scanner byl vyvýjen postupným pøidáváním podmínek pro rozpoznávání jednotlivých znakù. Zaèínalo se jednoduchým rozpoznáváním operátorù (+,-,*,/). Další fáze bylo rozpoznávání KLíèových slov a identifikátorù. Závìreèným krokem bylo oddìlení komentáøù ze vstupu, aby se pøekládal pouze kód a zapisování vstupních øìtezcù a èísel.
+
+Scanner byl vypracován ve spolupráci Daniela Poisla a Filipa Weigela. Menší úpravy , které spoèívaly hlavnì v komunikaci Scanneru a Parseru, vypracoval Daniel Švub. 
