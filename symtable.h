@@ -1,3 +1,17 @@
+/*
+
+Projekt z předmětů IFJ a IAL
+Překladač jazyka IFJ17
+
+symtable.h
+
+Autoři:
+
+Daniel Poisl (xpoisl00)
+Daniel Švub (xsvubd00)
+
+*/
+
 #define max_size 100
 
 typedef char* tklic;

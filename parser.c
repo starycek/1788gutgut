@@ -26,7 +26,7 @@ int pre_next(int *input){
   else if(type == 30){
     tklic variable = (tklic) malloc(strlen(token)+1);
     strcpy(variable, token);
-    if(tSearch(table, variable) == NULL){
+    if(tSearch(vartable, variable) == NULL){
       if(!error) error = DIM_ERR;
       fprintf(stderr, "Neexistující proměnná '%s'\n", token);
       free(variable);
@@ -217,13 +217,13 @@ int des_def(int type){
         free(variable);
         return FALSE;
       }
-      if(tSearch(table, variable) != NULL){
+      if(tSearch(vartable, variable) != NULL){
         if(!error) error = DIM_ERR;
         fprintf(stderr, "Vícenásobná deklarace proměnné '%s'\n", variable);
         free(variable);
         return FALSE;
       }
-      tInsert(table, variable, 0.0, "id", var_type);
+      tInsert(vartable, variable, 0.0, "id", var_type);
       free(variable);
       return TRUE;
     } else {
@@ -249,7 +249,7 @@ int des_stat(int type){
     if(tok_type == ID){
       tklic variable = (tklic) malloc(strlen(token)+1);
       strcpy(variable, token);
-      if(tSearch(table, variable) == NULL){
+      if(tSearch(vartable, variable) == NULL){
         if(!error) error = DIM_ERR;
         fprintf(stderr, "Neexistující proměnná '%s'\n", token);
         free(variable);
@@ -268,7 +268,7 @@ int des_stat(int type){
     if(tok_type == ID){
       tklic variable = (tklic) malloc(strlen(token)+1);
       strcpy(variable, token);
-      if(tSearch(table, variable) == NULL){
+      if(tSearch(vartable, variable) == NULL){
         if(!error) error = DIM_ERR;
         fprintf(stderr, "Neexistující proměnná '%s'\n", token);
         free(variable);
@@ -334,7 +334,7 @@ int des_func_list(){
     return FALSE;
   }
   if(!strcmp(token, "end")){ // 32
-    tClearall(table);
+    tClearall(vartable);
     return (des_KEYWORD("function")) && des_KEYWORD("\n");
   } else if(!strcmp(token, "dim") || (type == ID) || !strcmp(token, "print") || !strcmp(token, "input") || !strcmp(token, "if") || !strcmp(token, "do") || !strcmp(token, "return")){ // 31
     return (des_stat(type) && des_KEYWORD("\n") && des_func_list());
@@ -349,7 +349,7 @@ int des_sc_list(){
     return FALSE;
   }
   if(!strcmp(token, "end")){ // 3
-    tClearall(table);
+    tClearall(vartable);
     return (des_KEYWORD("scope"));
   } else if(!strcmp(token, "dim") || (type == ID) || !strcmp(token, "print") || !strcmp(token, "input") || !strcmp(token, "if") || !strcmp(token, "do") || !strcmp(token, "return")){ // 2
     return (des_stat(type) && des_KEYWORD("\n") && des_sc_list());
@@ -385,12 +385,42 @@ int des_prog(){
     return FALSE;
   }
   if(!strcmp(token, "scope")){ // 1
-    initTable(table);
+    initTable(vartable);
     return (des_KEYWORD("\n") && des_sc_list() && des_prog());
   } else if(!strcmp(token, "declare")){ // 25
-    return (des_KEYWORD("function") && (des_TTYPE() == ID) && des_KEYWORD("(") && des_par_list() && des_KEYWORD("as") && (des_TTYPE() == (INTEGER || DOUBLE || STRING)) && des_KEYWORD("\n") && des_prog());
+    if(!des_KEYWORD("function")) return FALSE;
+    if(des_TTYPE() == ID){
+      tklic label = (tklic) malloc(strlen(token)+1);
+      strcpy(label, token);
+      if(!des_KEYWORD("(") || !des_par_list() || !des_KEYWORD("as")){
+        free(label);
+        return FALSE;
+      }
+      int tok_type = des_TTYPE();
+      int fn_type;
+      if(tok_type == INTEGER) fn_type = 1;
+      else if(tok_type == DOUBLE) fn_type = 2;
+      else if(tok_type == STRING) fn_type = 3;
+      else {
+        free(label);
+        return FALSE;
+      }
+      if(tSearch(fntable, label) != NULL){
+        if(!error) error = DIM_ERR;
+        fprintf(stderr, "Vícenásobná deklarace funkce '%s'\n", label);
+        free(label);
+        return FALSE;
+      }
+      tInsert(fntable, label, 0.0, "id", fn_type);
+      free(label);
+      return des_KEYWORD("\n") && des_prog();
+    } else return FALSE;
+
+
+    /*return (des_KEYWORD("function") && (des_TTYPE() == ID) && des_KEYWORD("(") && des_par_list() && des_KEYWORD("as") && (des_TTYPE() == (INTEGER || DOUBLE || STRING)) && des_KEYWORD("\n") && des_prog());
+    */
   } else if(!strcmp(token, "function")){ // 30
-    initTable(table);
+    initTable(vartable);
     return ((des_TTYPE() == ID) && des_KEYWORD("(") && des_par_list() && des_KEYWORD("as") && (des_TTYPE() == (INTEGER || DOUBLE || STRING)) && des_KEYWORD("\n") && des_func_list() && des_prog());
   } else if(!strcmp(token, "\0")){ // 33
     return TRUE;
@@ -407,7 +437,9 @@ int descent(){
 int main(int argc, char *argv[]){
   create_table();
   row = 1;
-  table = malloc(max_size*sizeof(thtable));
+  vartable = malloc(max_size*sizeof(thtable));
+  fntable = malloc(max_size*sizeof(thtable));
+  initTable(fntable);
   if(argc == 2){
     if(!(source = fopen(argv[1], "r"))){
       fprintf(stderr, "99: Chyba otevření souboru!\n");
@@ -419,8 +451,10 @@ int main(int argc, char *argv[]){
   }
   int result = descent();
   if(!error) error = result;
-  tClearall(table);
-  free(table);
+  tClearall(vartable);
+  tClearall(fntable);
+  free(vartable);
+  free(fntable);
   fclose(source);
   if(error == 1) fprintf(stderr, "01: Lexikální chyba na řádku %d!\n", row);
   if(error == 2) fprintf(stderr, "02: Syntaktická chyba na řádku %d!\n", row);

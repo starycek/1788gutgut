@@ -8,7 +8,6 @@ parser.h
 Autoři:
 
 Daniel Švub (xsvubd00)
-Jan Zwierz (xzwier00)
 
 */
 
@@ -40,7 +39,8 @@ char token[] = "\0";
 char transfer[50];
 int error;
 int row;
-thtable *table;
+thtable *vartable;
+thtable *fntable;
 
 // Rekurzivní sestup:
 

@@ -1,3 +1,17 @@
+/*
+
+Projekt z předmětů IFJ a IAL
+Překladač jazyka IFJ17
+
+symtable.c
+
+Autoři:
+
+Daniel Poisl (xpoisl00)
+Daniel Švub (xsvubd00)
+
+*/
+
 #include "symtable.h"
 
 int htsize=max_size;
