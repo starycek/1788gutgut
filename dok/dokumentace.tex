@@ -1,0 +1,61 @@
+\documentclass[a4paper, 12pt]{article}
+\usepackage[czech]{babel}
+\usepackage[latin2]{inputenc}
+\usepackage[IL2]{fontenc}
+\usepackage[left=2cm, text={17cm, 24cm}, top=3cm]{geometry}
+\usepackage{times}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{graphics}
+
+\begin{document}
+\begin{titlepage}
+\begin{center}
+	\Huge \textsc{Vysoké uèení technické v Brnì\\
+	\huge Fakulta informaèních technologií}\\
+	\vspace{\stretch{0.382}}
+	\Huge
+	Projekt z pøedmìtù IFJ \& IAL\\
+	\huge
+	\medskip
+	Pøekladaè jazyka IFJ17\\
+	\bigskip\bigskip\bigskip\bigskip
+	\Large
+	\textbf{©vub Daniel (xsvubd00)}\\
+	\bigskip
+	Poisl Daniel (xpoisl00)\\
+	Weigel Filip (xweige01)\\
+	Zwierz Jan (xzwier00)\\
+	\vspace{\stretch{0.618}}
+\end{center}
+\Large \today
+\hfill
+Tým 88, varianta II
+\end{titlepage}
+\Large \textbf{Obsah}
+\newpage
+\section{Úvod}
+
+Tato dokumentace popisuje návrh a zpùsob implementace projektu z projektù IFJ a IAL. Jedná se o analyzátor zdrojových kódù jazyka IFJ17, zjednodu¹ené varianty jazyka FreeBasic. Druhá èást projektu, interpret daného jazyka do mezikódu IFJcode17, není implementována. Program pouze ovìøí lexikální, syntaktickou a sémantickou správnost zdrojového kódu.
+
+\newpage
+
+\section{Práce v týmu}
+
+\subsection{Rozdìlení práce}
+\begin{itemize}
+\item\textbf{Daniel ©vub}\,--\,vedoucí týmu, gramatika, parser, zásobník, úpravy
+\item\textbf{Daniel Poisl}\,--\,scanner, tabulka symbolù
+\item\textbf{Filip Weigel}\,--\,scanner, GIT repozitáø
+\item\textbf{Jan Zwierz}\,--\,gramatika, dokumentace, makefile
+\end{itemize}
+\subsection{Komunikace mezi èleny}
+Na¹e schùzky probíhaly na kolejích, kde bydlí 3 ze 4 èlenù týmu. Na první schùzce byly rozdìleny úkoly a èásti projektu jednotlivým èlenùm. Èlenové na této koleji se scházeli jak uznali za vhodné. Ètvrtý èlen docházel, kdykoli to bylo potøeba, popø. jsme komunikovali pøes internet.
+\subsection{Sdílení výsledkù práce}
+Ke sdílení práce jednotlivcù byl èlenem týmu Filipem Weiglem vytvoøen repozitáø na GitHubu. Tento repozitáø byl vyu¾íván ke sdílení aktuálních verzí souborù, na kterých jednotliví èlenové provedli jakékoli úpravy. Jako první na repozitáø byly umístìny soubory scanner.c a parser.c spoleènì s hlavièkovými soubory. Následovaly dal¹í zdrojové soubory s tabulkami vypracovanými v excelu a nakonec i dokumentace.
+\subsection{Problémy}
+Jeliko¾ jsme ¹patnì odhadli rozsah projektu a mìli jsme problém se zahájením implementace, nedokázali jsme dokonèit celý projekt. Problém spoèíval v pøíli¹ném odkládání zahájení prací na projektu s tím, ¾e pøi samotné implementaci jsme nará¾eli na víc problémù ne¾ jsme oèekávali. Napøíklad: problémy s kompatibilitou zdrojových souborù tvoøených jednotlivými èleny, pøièem¾ ka¾dý oèekával nìco jiného od zdrojového kódu druhé strany. To zpùsobovalo neèekané chyby pøi pøekladu programu a vy¾ádalo si zdlouhavé debuggování.
+
+
+\end{document}
