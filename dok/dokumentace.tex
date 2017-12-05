@@ -8,6 +8,7 @@
 \usepackage{amsthm}
 \usepackage{amssymb}
 \usepackage{graphics}
+\usepackage{pdfpages}
 
 \begin{document}
 \begin{titlepage}
@@ -56,6 +57,28 @@ Na¹e schùzky probíhaly na kolejích, kde bydlí 3 ze 4 èlenù týmu. Na první schùzc
 Ke sdílení práce jednotlivcù byl èlenem týmu Filipem Weiglem vytvoøen repozitáø na GitHubu. Tento repozitáø byl vyu¾íván ke sdílení aktuálních verzí souborù, na kterých jednotliví èlenové provedli jakékoli úpravy. Jako první na repozitáø byly umístìny soubory scanner.c a parser.c spoleènì s hlavièkovými soubory. Následovaly dal¹í zdrojové soubory s tabulkami vypracovanými v excelu a nakonec i dokumentace.
 \subsection{Problémy}
 Jeliko¾ jsme ¹patnì odhadli rozsah projektu a mìli jsme problém se zahájením implementace, nedokázali jsme dokonèit celý projekt. Problém spoèíval v pøíli¹ném odkládání zahájení prací na projektu s tím, ¾e pøi samotné implementaci jsme nará¾eli na víc problémù ne¾ jsme oèekávali. Napøíklad: problémy s kompatibilitou zdrojových souborù tvoøených jednotlivými èleny, pøièem¾ ka¾dý oèekával nìco jiného od zdrojového kódu druhé strany. To zpùsobovalo neèekané chyby pøi pøekladu programu a vy¾ádalo si zdlouhavé debuggování.
+\newpage
+\section{Implementace}
+\subsection{Scanner}
+Scanner je v programu vyu¾íván na ètení symbolù ze vstupu a následným pøedáním dat parseru, ale provádí i lexikální analýzu. Realizován je pomocí podmínek, které rozpoznají jednoduché znaky (+, -,\ \dots) a pro slo¾itìj¹í výrazy jako napø. klíèová slova  je vyu¾ito jednotlivých case. Celkem je ve scanneru pou¾ito 10x case. Ka¾dý case slou¾í k jinému rozpoznávání, ale nìkterý case se skládá i z více case.\par
+Scanner je volán Parserem. Scanner následnì zaène èíst vstupní kód a zapisuje data na pole charu. Pokud je zji¹tìna lexikální chyba v zadávaném kódu, je Scanner ukonèen a posílá Parseru hodnotu 1(chyba v programu v rámci lexikální analýzy). Data se poté posílají zpìt Parseru na syntaktickou a sémantickou analýzu.\\
+\begin{itemize}
+\item \textbf{Case 1}: Spustí se pokud je zadán \textit{backslash} a urèí zda se jedná o celoèíselné dìlení, nebo o komentáø
+\item \textbf{Case 2}: Rozpoznávání zda se jedná o klíèové slovo jazyka, nebo zda je zadáván identifikátor promìnné, funkce.
+\item \textbf{Case 3}: Zapisování a urèení zda se jedná o celé èíslo. Pokud je zadána teèka tak se spou¹tí \textit{Case 7}.
+\item \textbf{Case 4}: zapisování vstupního øetìzce. Zapisování se ukonèí pokud je zadána \textit{uvozovka}.
+\item \textbf{Case 5}: Ète øádkový komentáø a hledá jeho ukonèení pomocí odøádkování v kódu.
+\item \textbf{Case 6}: Ète blokový komentáø. Po pøeètení apostrofu je spu¹tìn \textit{Case 8}.
+\item \textbf{Case 7}: Ète èísla a zapisuje si jejich hodnotu. Po zadání operátoru je pøíslu¹ná hodnota èísla odeslána Parseru.
+\item \textbf{Case 8}: Kontroluje zda se po \textit{apostrofu} nachází \textit{backslash}. Pokud ano tak je ukonèen blokový komentáø, pokud ne tak se opìt spou¹tí \textit{Case 6}.
+\item \textbf{Case 9}: O¹etøení vícenásobného odøádkování v zadávaném kódu.
+\item \textbf{Case 10}: Kontrola jestli se po vykøièníku zadává vstupní øetìzec. Pokud je za vykøièníkem cokoliv jiného ne¾ uvozovka tak je vrácena lexikální chyba kódu.
+\end{itemize}
+Scanner byl vyvíjen postupným pøidáváním podmínek pro rozpoznávání jednotlivých znakù. Zaèínalo se jednoduchým rozpoznáváním operátorù (+, -, *, /). Dal¹í fáze bylo rozpoznávání klíèových slov a identifikátorù. Závìreèným krokem bylo oddìlení komentáøù ze vstupu, aby se pøekládal pouze kód a zapisování vstupních øetìzcù a èísel.\\
+\newpage
 
+\begin{center}
+	\scalebox{1.0}{\includegraphics{scanner.eps}}\\
+\end{center}
 
 \end{document}
