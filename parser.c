@@ -38,7 +38,7 @@ int pre_next(int *input){
       return type;
     }
   }
-  else if((type == DOUBNUM) || (type == INTNUM)) *input = PRE_ID;
+  else if((type == DOUBNUM) || (type == INTNUM) || (type == INPUTSTR)) *input = PRE_ID;
   else *input = PRE_END;
   return type;
 }
@@ -227,7 +227,10 @@ int des_def(int type){
       free(variable);
       return TRUE;
     } else {
-      return (des_KEYWORD("as") && (des_TTYPE() == (INTEGER || DOUBLE || STRING)));
+      if(!des_KEYWORD("as")) return FALSE;
+      int tok_type = des_TTYPE();
+      if(tok_type == INTEGER || tok_type == DOUBLE || tok_type == STRING) return TRUE;
+      //return (des_KEYWORD("as") && (des_TTYPE() == (INTEGER || DOUBLE || STRING)));
     }
   }
   return FALSE;
@@ -413,7 +416,7 @@ int des_prog(){
       }
       tInsert(fntable, label, 0.0, "id", fn_type);
       free(label);
-      return des_KEYWORD("\n") && des_prog();
+      return (des_KEYWORD("\n") && des_prog());
     } else return FALSE;
 
 
@@ -421,7 +424,8 @@ int des_prog(){
     */
   } else if(!strcmp(token, "function")){ // 30
     initTable(vartable);
-    return ((des_TTYPE() == ID) && des_KEYWORD("(") && des_par_list() && des_KEYWORD("as") && (des_TTYPE() == (INTEGER || DOUBLE || STRING)) && des_KEYWORD("\n") && des_func_list() && des_prog());
+    int tok_type = 0;
+    return ((des_TTYPE() == ID) && des_KEYWORD("(") && des_par_list() && des_KEYWORD("as") && (tok_type = des_TTYPE()) && ((tok_type == INTEGER) || (tok_type == DOUBLE) || (tok_type == STRING)) && des_KEYWORD("\n") && des_func_list() && des_prog());
   } else if(!strcmp(token, "\0")){ // 33
     return TRUE;
   }

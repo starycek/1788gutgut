@@ -248,10 +248,12 @@ int getNextToken(){
         i++;
         token[i]='\0';
         return INPUTSTR;
-      }else{
+      }else if(isalnum(c) || c=='\\'){
       token[i]=c;
       i++;
       state= 4;
+      }else{
+        return 1;
       }
       break;
     case 5:
