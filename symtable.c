@@ -97,7 +97,7 @@ thitem *tSearch (thtable* ptrht, tklic klic){
   }else{
     while(prvek!=NULL)
     {
-      if(!strcmp(prvek->klic, klic))
+      if(prvek->klic == klic) //!strcmp(prvek->klic, klic)
       {
         return prvek;
       }

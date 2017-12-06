@@ -36,9 +36,8 @@ Daniel Švub (xsvubd00)
 
 // Globální proměnné:
 
-FILE *source = NULL;
-char token[] = "\0";
-char transfer[500];
+char token[1000];
+char transfer[1000];
 int error;
 int row;
 thtable *vartable;

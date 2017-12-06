@@ -163,13 +163,14 @@ int des_par(){
   return FALSE;
 }
 
-int des_par_list(){
+int des_par_list(int declare){
   int type = getNextToken();
   if(type == 1){
     if(!error) error = LEX_ERR;
     return FALSE;
   }
   if(type == ID){ // 27
+    if(declare) type = -type;
     return (des_def(type) && des_par());
   } else if(!strcmp(token, ")")){ // 26
     return TRUE;
@@ -215,8 +216,9 @@ int des_def(int type){
       return FALSE;
     }
   }
-  if(type == ID){ // 5
-    if(declare){
+  if(type == ID || type == -30){ // 5
+    if(declare || type < 0){
+      if(type < 0) type = -type;
       tklic variable = (tklic) malloc(strlen(token)+1);
       strcpy(variable, token);
       if(!des_KEYWORD("as")){
@@ -410,7 +412,7 @@ int des_prog(){
     if(des_TTYPE() == ID){
       tklic label = (tklic) malloc(strlen(token)+1);
       strcpy(label, token);
-      if(!des_KEYWORD("(") || !des_par_list() || !des_KEYWORD("as")){
+      if(!des_KEYWORD("(") || !des_par_list(FALSE) || !des_KEYWORD("as")){
         free(label);
         return FALSE;
       }
@@ -443,7 +445,7 @@ int des_prog(){
     if(des_TTYPE() == ID){
       tklic label = (tklic) malloc(strlen(token)+1);
       strcpy(label, token);
-      if(!des_KEYWORD("(") || !des_par_list() || !des_KEYWORD("as")){
+      if(!des_KEYWORD("(") || !des_par_list(TRUE) || !des_KEYWORD("as")){
         free(label);
         return FALSE;
       }
@@ -490,19 +492,14 @@ int descent(){
 int main(int argc, char *argv[]){
   create_table();
   row = 1;
-  vartable = malloc(max_size*sizeof(thtable));
-  fntable = malloc(max_size*sizeof(thtable));
+  vartable = malloc(max_size*sizeof(thitem*));
+  fntable = malloc(max_size*sizeof(thitem*));
   initTable(fntable);
-  tInsert(fntable, "length", 3, "id", 1);
   tInsert(fntable, "substr", 3, "id", 3);
+  tInsert(fntable, "length", 3, "id", 1);
   tInsert(fntable, "asc", 3, "id", 1);
   tInsert(fntable, "chr", 3, "id", 3);
-  if(argc == 2){
-    if(!(source = fopen(argv[1], "r"))){
-      fprintf(stderr, "99: Chyba otevření souboru!\n");
-      return 99;
-    }
-  } else {
+  if(argc != 1){
     fprintf(stderr, "99: Chybný počet parametrů!\n");
     return 99;
   }
@@ -512,10 +509,8 @@ int main(int argc, char *argv[]){
   tClearall(fntable);
   free(vartable);
   free(fntable);
-  fclose(source);
   if(error == 1) fprintf(stderr, "01: Lexikální chyba na řádku %d!\n", row);
   if(error == 2) fprintf(stderr, "02: Syntaktická chyba na řádku %d!\n", row);
   if(error == 3) fprintf(stderr, "03: Sémantická chyba na řádku %d!\n", row);
-  if(error == 0) fprintf(stderr, "00: Kontrola proběhla úspěšně.\n");
   return error;
 }

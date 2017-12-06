@@ -31,8 +31,8 @@ int getNextToken(){
     return 0;
   }
   while(1){
-    c=getc(source);
-    if(feof(source)){
+    c=getc(stdin);
+    if(feof(stdin)){
       token[0] = '\0';
       return 0;
     }
@@ -92,19 +92,19 @@ int getNextToken(){
         else if(c=='>'){
         token[i]=c;
         i++;
-        if((c=getc(source))=='='){
+        if((c=getc(stdin))=='='){
           token[i]=c;
           i++;
           return GREQ;
         } else{
-        ungetc(c, source);
+        ungetc(c, stdin);
         return GREATR;
         }
         }
         else if(c=='<'){
           token[i]=c;
           i++;
-          c=getc(source);
+          c=getc(stdin);
         if(c=='='){
           token[i]=c;
           i++;
@@ -114,7 +114,7 @@ int getNextToken(){
           i++;
           return DIFFERENT;
         }else{
-        ungetc(c, source);
+        ungetc(c, stdin);
         return LESSER;
         }
       }
@@ -157,7 +157,7 @@ int getNextToken(){
       if(c=='\''){
         state=6;
       }else if(isdigit(c)){
-      ungetc(c,source);
+      ungetc(c,stdin);
       return DOUBDIV;
       }else{
       return 1;
@@ -170,10 +170,10 @@ int getNextToken(){
         break;
       }else{
         if(c == '\n'){
-          ungetc(c, source);
+          ungetc(c, stdin);
           state = 9;
         }
-        ungetc(c, source);
+        ungetc(c, stdin);
         token[i]='\0';
       if(strcmp(token,"as")==0){
         return AS;
@@ -235,7 +235,7 @@ int getNextToken(){
       state=7;
       }else if (c=='+' ||c=='-' ||c=='*' ||c=='/' ||c=='\\' ||c==' ' || c=='\n' || c=='=' || c=='<' || c=='>' || c==';'){
       state=0;
-      ungetc(c,source);
+      ungetc(c,stdin);
       token[i]='\0';
       return INTNUM;
       }else{
@@ -248,12 +248,10 @@ int getNextToken(){
         i++;
         token[i]='\0';
         return INPUTSTR;
-      }else if(isalnum(c) || c=='\\'){
-      token[i]=c;
-      i++;
-      state= 4;
       }else{
-        return 1;
+        token[i]=c;
+        i++;
+        state= 4;
       }
       break;
     case 5:
@@ -269,13 +267,12 @@ int getNextToken(){
       }else{
       state= 6;
       }
-      //c=getc(source);
       break;
     case 8:
       if(c=='/'){
-        c=getc(source);
-        while(c=='\n') c=getc(source);
-        ungetc(c, source);
+        c=getc(stdin);
+        while(c=='\n') c=getc(stdin);
+        ungetc(c, stdin);
         i=0;
         state = 0;
         break;
@@ -290,7 +287,7 @@ int getNextToken(){
         state= 7;
       }else if(c=='+'|| c=='-' || c=='*' || c=='/' || c=='\\'){
       state=0;
-      ungetc(c,source);
+      ungetc(c,stdin);
       return DOUBNUM;
       }else{
       return 1;
@@ -298,16 +295,16 @@ int getNextToken(){
       break;
     case 9:
       row=row;
-      char t = getc(source);
+      char t = getc(stdin);
       if(t == '\n'){
-        ungetc(t, source);
+        ungetc(t, stdin);
         break;
       }
-      if(feof(source)){
+      if(feof(stdin)){
         token[0] = '\0';
         return EOL;
       }
-      ungetc(t, source);
+      ungetc(t, stdin);
       token[0] = c;
       token[1] = '\0';
       return EOL;
