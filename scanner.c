@@ -23,7 +23,6 @@ Daniel Švub (xsvubd00)
 int getNextToken(){
   char c;
   int state=0;
-  int radek=1;
   int i=0;
   token[0] = '\0';
   if(transfer[0] != '\0'){
@@ -44,10 +43,10 @@ int getNextToken(){
       if (isspace(c)){
         state=0;
       }
-      else if(c=='/'){
+      else if(c=='\\'){
         token[i]=c;
         i++;
-        return DOUBDIV;
+        return INTDIV;
       }
       else if(isalpha(c)||c=='_'){
         token[i]=tolower(c);
@@ -64,7 +63,7 @@ int getNextToken(){
         i++;
         return SUB;
       }
-      else if (c=='\\'){
+      else if (c=='/'){
         token[i]=c;
         i++;
         state=1;
@@ -148,6 +147,7 @@ int getNextToken(){
         i++;
         state=4;
       }
+      else if(c=='\'') state = 5;
       else{
         return 1;
       }
@@ -158,7 +158,7 @@ int getNextToken(){
         state=6;
       }else if(isdigit(c)){
       ungetc(c,source);
-      return INTDIV;
+      return DOUBDIV;
       }else{
       return 1;
       }
@@ -258,7 +258,7 @@ int getNextToken(){
       break;
     case 5:
       if(c=='\n'){
-        break;
+        return EOL;
       }else{
       state= 5;
       }
@@ -269,9 +269,15 @@ int getNextToken(){
       }else{
       state= 6;
       }
+      //c=getc(source);
       break;
     case 8:
-      if(c=='\\'){
+      if(c=='/'){
+        c=getc(source);
+        while(c=='\n') c=getc(source);
+        ungetc(c, source);
+        i=0;
+        state = 0;
         break;
       }else{
       state= 6;
@@ -291,7 +297,7 @@ int getNextToken(){
       }
       break;
     case 9:
-      radek++;
+      row=row;
       char t = getc(source);
       if(t == '\n'){
         ungetc(t, source);
@@ -306,7 +312,6 @@ int getNextToken(){
       token[1] = '\0';
       return EOL;
     case 10:
-      radek++;
       if(c=='"'){
         state=4;
         token[i]=c;

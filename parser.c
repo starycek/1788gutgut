@@ -27,8 +27,10 @@ int pre_next(int *input){
     tklic variable = (tklic) malloc(strlen(token)+1);
     strcpy(variable, token);
     if(tSearch(vartable, variable) == NULL){
-      if(!error) error = DIM_ERR;
-      fprintf(stderr, "Neexistující proměnná '%s'\n", token);
+      if(tSearch(fntable, variable) == NULL){
+        if(!error) error = DIM_ERR;
+        fprintf(stderr, "Neexistující proměnná '%s'\n", token);
+      }
       free(variable);
       *input = PRE_END;
       return type;
@@ -183,7 +185,20 @@ int des_ass(){
     return FALSE;
   }
   if(type == ID){ // 19
-    return (des_KEYWORD("(") && des_in_list());
+    tklic label = (tklic) malloc(strlen(token)+1);
+    strcpy(label, token);
+    if(tSearch(vartable, label) != NULL){
+      free(label);
+      return des_exp(input);
+    } else if(tSearch(fntable, label) != NULL){
+      return (des_KEYWORD("(") && des_in_list());
+    } else {
+      fprintf(stderr, "Neplatný identifikátor '%s'\n", label);
+      free(label);
+      if(!error) error = DIM_ERR;
+      return FALSE;
+    }
+    //return (des_KEYWORD("(") && des_in_list());
   } else { // 18
     return des_exp(input);
   }
@@ -353,7 +368,7 @@ int des_sc_list(){
   }
   if(!strcmp(token, "end")){ // 3
     tClearall(vartable);
-    return (des_KEYWORD("scope"));
+    return (des_KEYWORD("scope")) && des_KEYWORD("\0");
   } else if(!strcmp(token, "dim") || (type == ID) || !strcmp(token, "print") || !strcmp(token, "input") || !strcmp(token, "if") || !strcmp(token, "do") || !strcmp(token, "return")){ // 2
     return (des_stat(type) && des_KEYWORD("\n") && des_sc_list());
   }
@@ -414,7 +429,7 @@ int des_prog(){
         free(label);
         return FALSE;
       }
-      tInsert(fntable, label, 0.0, "id", fn_type);
+      tInsert(fntable, label, 1, "id", fn_type);
       free(label);
       return (des_KEYWORD("\n") && des_prog());
     } else return FALSE;
@@ -424,10 +439,44 @@ int des_prog(){
     */
   } else if(!strcmp(token, "function")){ // 30
     initTable(vartable);
-    int tok_type = 0;
-    return ((des_TTYPE() == ID) && des_KEYWORD("(") && des_par_list() && des_KEYWORD("as") && (tok_type = des_TTYPE()) && ((tok_type == INTEGER) || (tok_type == DOUBLE) || (tok_type == STRING)) && des_KEYWORD("\n") && des_func_list() && des_prog());
+
+    if(des_TTYPE() == ID){
+      tklic label = (tklic) malloc(strlen(token)+1);
+      strcpy(label, token);
+      if(!des_KEYWORD("(") || !des_par_list() || !des_KEYWORD("as")){
+        free(label);
+        return FALSE;
+      }
+      int tok_type = des_TTYPE();
+      int fn_type;
+      if(tok_type == INTEGER) fn_type = 1;
+      else if(tok_type == DOUBLE) fn_type = 2;
+      else if(tok_type == STRING) fn_type = 3;
+      else {
+        free(label);
+        return FALSE;
+      }
+      thitem *func = tSearch(fntable, label);
+      if(func != NULL){
+        if(func -> data > 1){
+          if(!error) error = DIM_ERR;
+          fprintf(stderr, "Vícenásobná definice funkce '%s'\n", label);
+          free(label);
+          return FALSE;
+        } else {
+          tInsert(fntable, label, func -> data + 2, "id", fn_type);
+        }
+      } else tInsert(fntable, label, 2, "id", fn_type);
+      free(label);
+      return (des_KEYWORD("\n") && des_func_list() && des_prog());
+    } else return FALSE;
+
+
+    /*return ((des_TTYPE() == ID) && des_KEYWORD("(") && des_par_list() && des_KEYWORD("as") && (tok_type = des_TTYPE()) && ((tok_type == INTEGER) || (tok_type == DOUBLE) || (tok_type == STRING)) && des_KEYWORD("\n") && des_func_list() && des_prog());*/
   } else if(!strcmp(token, "\0")){ // 33
     return TRUE;
+  } else if(!strcmp(token, "\n")){
+    return (des_prog());
   }
   return FALSE;
 }
@@ -444,6 +493,10 @@ int main(int argc, char *argv[]){
   vartable = malloc(max_size*sizeof(thtable));
   fntable = malloc(max_size*sizeof(thtable));
   initTable(fntable);
+  tInsert(fntable, "length", 3, "id", 1);
+  tInsert(fntable, "substr", 3, "id", 3);
+  tInsert(fntable, "asc", 3, "id", 1);
+  tInsert(fntable, "chr", 3, "id", 3);
   if(argc == 2){
     if(!(source = fopen(argv[1], "r"))){
       fprintf(stderr, "99: Chyba otevření souboru!\n");

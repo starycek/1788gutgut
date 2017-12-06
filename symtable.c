@@ -46,19 +46,25 @@ void tInsert (thtable* ptrht, tklic klic, tdata data,tid id, ttype type){
   {
     if ((*ptrht)[pomocna]!=NULL)
     {
-      prvek=malloc(sizeof(thtable));
+      prvek=malloc(sizeof(thitem));
+      //prvek=malloc(strlen(klic)+1+strlen(id)+1+sizeof(int)+sizeof(float));
       prvek->klic=klic;
+      //strcpy(prvek->klic, klic);
       prvek->data=data;
       prvek->id=id;
+      //strcpy(prvek->id,id);
       prvek->type=type;
       prvek->ptnext=NULL;
       (*ptrht)[pomocna]=prvek;
     }
     else
     {
-      (*ptrht)[pomocna]=malloc(sizeof(thtable));
+      (*ptrht)[pomocna]=malloc(sizeof(thitem));
+      //(*ptrht)[pomocna]=malloc(strlen(klic)+1+strlen(id)+1+sizeof(int)+sizeof(float));
       (*ptrht)[pomocna]->klic=klic;
+      //strcpy((*ptrht)[pomocna]->klic,klic);
       (*ptrht)[pomocna]->id=id;
+      //strcpy((*ptrht)[pomocna]->id,id);
       (*ptrht)[pomocna]->data=data;
       (*ptrht)[pomocna]->type=type;
       (*ptrht)[pomocna]->ptnext=NULL;

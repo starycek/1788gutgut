@@ -17,6 +17,8 @@ Daniel Švub (xsvubd00)
 #include <stdlib.h>
 #include <string.h>
 
+// Nástroje pro tabulku symbolů:
+
 #include "symtable.c"
 
 // Logické hodnoty:
@@ -24,7 +26,7 @@ Daniel Švub (xsvubd00)
 #define TRUE 1
 #define FALSE 0
 
-// Chyby:
+// Návratové kódy:
 
 #define LEX_ERR 1
 #define SYN_ERR 2
@@ -36,7 +38,7 @@ Daniel Švub (xsvubd00)
 
 FILE *source = NULL;
 char token[] = "\0";
-char transfer[50];
+char transfer[500];
 int error;
 int row;
 thtable *vartable;
@@ -157,7 +159,7 @@ PRE_TAB[7][7] = 0;
 
 }
 
-// Zásobník:
+// Další soubory:
 
 #include "stack.c"
 #include "scanner.c"

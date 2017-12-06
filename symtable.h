@@ -17,7 +17,7 @@ Daniel Švub (xsvubd00)
 typedef char* tklic;
 typedef char* tid;
 typedef int ttype;
-typedef float tdata;
+typedef int tdata;
 typedef struct thitem{
   tklic klic;
   tid id;
