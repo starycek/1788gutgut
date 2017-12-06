@@ -34,13 +34,13 @@
 \hfill
 Tým 88, varianta II
 \end{titlepage}
-\Large \textbf{Obsah}
+\Large
+\tableofcontents
 \newpage
+\large
 \section{Úvod}
 
 Tato dokumentace popisuje návrh a zpùsob implementace projektu z projektù IFJ a IAL. Jedná se o analyzátor zdrojových kódù jazyka IFJ17, zjednodu¹ené varianty jazyka FreeBasic. Druhá èást projektu, interpret daného jazyka do mezikódu IFJcode17, není implementována. Program pouze ovìøí lexikální, syntaktickou a sémantickou správnost zdrojového kódu.
-
-\newpage
 
 \section{Práce v týmu}
 
@@ -57,11 +57,11 @@ Na¹e schùzky probíhaly na kolejích, kde bydlí 3 ze 4 èlenù týmu. Na první schùzc
 Ke sdílení práce jednotlivcù byl èlenem týmu Filipem Weiglem vytvoøen repozitáø na GitHubu. Tento repozitáø byl vyu¾íván ke sdílení aktuálních verzí souborù, na kterých jednotliví èlenové provedli jakékoli úpravy. Jako první na repozitáø byly umístìny soubory scanner.c a parser.c spoleènì s hlavièkovými soubory. Následovaly dal¹í zdrojové soubory s tabulkami vypracovanými v excelu a nakonec i dokumentace.
 \subsection{Problémy}
 Jeliko¾ jsme ¹patnì odhadli rozsah projektu a mìli jsme problém se zahájením implementace, nedokázali jsme dokonèit celý projekt. Problém spoèíval v pøíli¹ném odkládání zahájení prací na projektu s tím, ¾e pøi samotné implementaci jsme nará¾eli na víc problémù ne¾ jsme oèekávali. Napøíklad: problémy s kompatibilitou zdrojových souborù tvoøených jednotlivými èleny, pøièem¾ ka¾dý oèekával nìco jiného od zdrojového kódu druhé strany. To zpùsobovalo neèekané chyby pøi pøekladu programu a vy¾ádalo si zdlouhavé debuggování.
-\newpage
+
 \section{Implementace}
 \subsection{Scanner}
 Scanner je v programu vyu¾íván na ètení symbolù ze vstupu a následným pøedáním dat parseru, ale provádí i lexikální analýzu. Realizován je pomocí podmínek, které rozpoznají jednoduché znaky (+, -,\ \dots) a pro slo¾itìj¹í výrazy jako napø. klíèová slova  je vyu¾ito jednotlivých case. Celkem je ve scanneru pou¾ito 10x case. Ka¾dý case slou¾í k jinému rozpoznávání, ale nìkterý case se skládá i z více case.\par
-Scanner je volán Parserem. Scanner následnì zaène èíst vstupní kód a zapisuje data na pole charu. Pokud je zji¹tìna lexikální chyba v zadávaném kódu, je Scanner ukonèen a posílá Parseru hodnotu 1(chyba v programu v rámci lexikální analýzy). Data se poté posílají zpìt Parseru na syntaktickou a sémantickou analýzu.\\
+Scanner je volán Parserem. Scanner následnì zaène èíst vstupní kód a zapisuje data na pole charu. Pokud je zji¹tìna lexikální chyba v zadávaném kódu, je Scanner ukonèen a posílá Parseru hodnotu 1(chyba v programu v rámci lexikální analýzy). Data se poté posílají zpìt Parseru na syntaktickou a sémantickou analýzu.
 \begin{itemize}
 \item \textbf{Case 1}: Spustí se pokud je zadán \textit{backslash} a urèí zda se jedná o celoèíselné dìlení, nebo o komentáø
 \item \textbf{Case 2}: Rozpoznávání zda se jedná o klíèové slovo jazyka, nebo zda je zadáván identifikátor promìnné, funkce.
@@ -74,11 +74,31 @@ Scanner je volán Parserem. Scanner následnì zaène èíst vstupní kód a zapisuje da
 \item \textbf{Case 9}: O¹etøení vícenásobného odøádkování v zadávaném kódu.
 \item \textbf{Case 10}: Kontrola jestli se po vykøièníku zadává vstupní øetìzec. Pokud je za vykøièníkem cokoliv jiného ne¾ uvozovka tak je vrácena lexikální chyba kódu.
 \end{itemize}
-Scanner byl vyvíjen postupným pøidáváním podmínek pro rozpoznávání jednotlivých znakù. Zaèínalo se jednoduchým rozpoznáváním operátorù (+, -, *, /). Dal¹í fáze bylo rozpoznávání klíèových slov a identifikátorù. Závìreèným krokem bylo oddìlení komentáøù ze vstupu, aby se pøekládal pouze kód a zapisování vstupních øetìzcù a èísel.\\
+Scanner byl vyvíjen postupným pøidáváním podmínek pro rozpoznávání jednotlivých znakù. Zaèínalo se jednoduchým rozpoznáváním operátorù (+, -, *, /). Dal¹í fáze bylo rozpoznávání klíèových slov a identifikátorù. Závìreèným krokem bylo oddìlení komentáøù ze vstupu, aby se pøekládal pouze kód a zapisování vstupních øetìzcù a èísel.
+\subsection{Parser}
+Parser je hlavní èástí programu. Hlavními úkoly parseru jsou syntaktická a sémantická analýza kódu. Syntaktická analýza je dále rozdìlena na rekurzívní sestup a precedenèní syntaktickou analýzu.\par
+Pøi vypracování Parseru se nejdøíve vyøe¹ila komunikace se Scannerem. Dal¹ím krokem byla implementace rekurzívního sestupu a precedenèní analýzy. Po pøedchozí implementaci se vyøe¹ily chyby v gramatice a vypisování chybových hlá¹ení. Následovala sémantická analýza. Vytvoøil se soubor s funkcemi vztahující se k hashovací tabulce.\par
+Analýza zaèíná kontrolou, pomocí Scanneru, zda se v kódu nenachází lexikální chyba. Pokud Scanner vrátí hodnotu 1 je Parser ukonèen a vrací hodnotu \textit{01: Lexikální chyba}. Chyba nebyla nalezena, a tak Parser pøechází k samotné analýze. Parser volá Scanner funkcí getNextToken() a získává od nìj èíselný kód, který urèuje co je nalezeno (identifikátor, celé èíslo, desetinné atd.) a pole charu s pøíslu¹nou hodnotou nebo øetìzcem. Pomocí analýzy kontroluje syntaktickou správnost kódu. Pøi nalezení syntaktické chyby je Parser ukonèen a vypí¹e \textit{02: Syntaktická chyba}.\par
+Rekurzívní sestup je rozdìlen do nìkolika funkcí, které jsou rozli¹eny pomocí pøedpony \textit{des\_} , napø. \textit{des\_TTYPE}. Analýza shora dolù je pou¾ívána ve vìt¹inì kontrol analytické správnosti kódu. Precedenèní analýza je pou¾ita jen ke kontrole správnosti výrazù v kódu. Precedenèní analýza má proto jen jednu funkci s názvem \textit{des\_exp} a vyu¾ívá externí funkci \textit{pre\_next}.\par
+Sémantická analýza vyu¾ívá ke své funkènosti dvì hashovací tabulky. Obì tyto tabulky jsou stejného typu, ale do jedné se ukládají promìnné a do druhé funkce. S
+Hashovací tabulka je øe¹ena v samostatném souboru \textit{symtable.c}. Tento soubor má v sobì funkce na vytvoøení tabulky, vlo¾ení prvku do tabulky, vyhledávání v tabulce, smazání prvku a smazání tabulky. Tabulka je tvoøena strukturou. Parser vytvoøí dvì tabulky a po nalezení funkce nebo promìnné zapisuje do pøíslu¹né tabulky. Pokud se zapisuje do promìnné tak se hledá, jestli promìnná existuje, a pokud ano tak se pøiøadí urèitá hodnota.\bigskip\par
+\textbf{Problémy}: Pøi implementaci parseru pøedstavovala nejvìt¹í problém pøecedenèní syntaktická analýza a její spolupráce s rekurzivním sestupem, kontrola datových typù a ovládání tabulek symbolù a mnohá omezení jazyka C. Nìkteré funkce se nepodaøilo vypracovat.\\
 \newpage
-
+\section{Pøílohy}
+\subsection{Koneèný automat lexikálního analyzátoru}
 \begin{center}
 	\scalebox{1.0}{\includegraphics{scanner.eps}}\\
 \end{center}
-
+\subsection{LL tabulka}
+\begin{center}
+	\scalebox{0.8}{\includegraphics{LL-table.eps}}\\
+\end{center}
+\subsection{Precedenèní tabulka}
+\begin{center}
+	\scalebox{1.0}{\includegraphics{precedent_table.eps}}\\
+\end{center}
+\subsection{Zjednodu¹ená precedenèní tabulka}
+\begin{center}
+	\scalebox{1.0}{\includegraphics{precedent_table_simplified.eps}}\\
+\end{center}
 \end{document}
