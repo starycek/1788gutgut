@@ -23,10 +23,10 @@ int pre_next(int *input){
   else if((type >= 15) && (type <= 20)) *input = PRE_RELOPS;
   else if(type == 24) *input = PRE_LB;
   else if(type == 23) *input = PRE_RB;
-  else if(type == 30){
+  else if(type == 30){ // Proměnná, ověření existence
     tklic variable = (tklic) malloc(strlen(token)+1);
     strcpy(variable, token);
-    if(tSearch(vartable, variable) == NULL){
+    if(tSearch(vartable, variable) == NULL){ // Vyhledání v tabulce
       if(tSearch(fntable, variable) == NULL){
         if(!error) error = DIM_ERR;
         fprintf(stderr, "Neexistující proměnná '%s'\n", token);
@@ -191,7 +191,7 @@ int des_ass(){
     if(tSearch(vartable, label) != NULL){
       free(label);
       return des_exp(input);
-    } else if(tSearch(fntable, label) != NULL){
+    } else if(tSearch(fntable, label) != NULL){ // V přiřazení je funkce
       return (des_KEYWORD("(") && des_in_list());
     } else {
       fprintf(stderr, "Neplatný identifikátor '%s'\n", label);
@@ -199,16 +199,15 @@ int des_ass(){
       if(!error) error = DIM_ERR;
       return FALSE;
     }
-    //return (des_KEYWORD("(") && des_in_list());
   } else { // 18
-    return des_exp(input);
+    return des_exp(input); // Výraz
   }
   return FALSE;
 }
 
 int des_def(int type){
   int declare = FALSE;
-  if(type == 0){
+  if(type == 0){ // Funkce je volána bez dim
     declare = TRUE;
     type = getNextToken();
     if(type == 1){
@@ -226,6 +225,7 @@ int des_def(int type){
         return FALSE;
       }
       int tok_type = des_TTYPE();
+      // Získání typu proměnné
       int var_type;
       if(tok_type == INTEGER) var_type = 1;
       else if(tok_type == DOUBLE) var_type = 2;
@@ -234,20 +234,19 @@ int des_def(int type){
         free(variable);
         return FALSE;
       }
-      if(tSearch(vartable, variable) != NULL){
+      if(tSearch(vartable, variable) != NULL){ // Ověření existence proměnné
         if(!error) error = DIM_ERR;
         fprintf(stderr, "Vícenásobná deklarace proměnné '%s'\n", variable);
         free(variable);
         return FALSE;
       }
-      tInsert(vartable, variable, 0.0, "id", var_type);
+      tInsert(vartable, variable, 0.0, "id", var_type); // Pokud neexistuje, vložení
       free(variable);
       return TRUE;
     } else {
       if(!des_KEYWORD("as")) return FALSE;
       int tok_type = des_TTYPE();
       if(tok_type == INTEGER || tok_type == DOUBLE || tok_type == STRING) return TRUE;
-      //return (des_KEYWORD("as") && (des_TTYPE() == (INTEGER || DOUBLE || STRING)));
     }
   }
   return FALSE;
@@ -261,7 +260,17 @@ int des_stat(int type){
   if(!strcmp(token, "dim")){ // 4
     return (des_def(0));
   } else if(type == ID){ // 17
-    return (des_KEYWORD("=") && des_ass());
+    tklic label = (tklic) malloc(strlen(token)+1);
+    strcpy(label, token);
+    if(tSearch(vartable, label) != NULL){
+      free(label);
+      return (des_KEYWORD("=") && des_ass());
+    } else {
+      fprintf(stderr, "Neplatný identifikátor '%s'\n", label);
+      free(label);
+      if(!error) error = DIM_ERR;
+      return FALSE;
+    }
   } else if(!strcmp(token, "print")){ // 6
     return (des_exp(10) && des_KEYWORD(";") && des_out());
   } else if(!strcmp(token, "input")){ // 7
@@ -285,10 +294,10 @@ int des_stat(int type){
     return (des_KEYWORD("while") && des_exp(10) && des_KEYWORD("\n") && des_loop_list());
   } else if(!strcmp(token, "return")){ // 24
     int tok_type = des_TTYPE();
-    if(tok_type == ID){
+    if(tok_type == ID){ // Ověření existence proměnné
       tklic variable = (tklic) malloc(strlen(token)+1);
       strcpy(variable, token);
-      if(tSearch(vartable, variable) == NULL){
+      if(tSearch(vartable, variable) == NULL){ // Vyhledání v tabulce
         if(!error) error = DIM_ERR;
         fprintf(stderr, "Neexistující proměnná '%s'\n", token);
         free(variable);
@@ -394,7 +403,7 @@ int des_KEYWORD(char *input){
     return FALSE;
   }
   if(!strcmp(token, "\n") && !strcmp(input, "\n")) row++;
-  if(!(!strcmp(token, input))) printf("Neočekávaný token '%s', očekáváno: '%s'\n", token, input);
+  if(!(!strcmp(token, input))) fprintf(stderr, "Neočekávaný token '%s', očekáváno: '%s'\n", token, input);
   if(!strcmp(token, input)) return TRUE;
   else return FALSE;
 }
@@ -405,7 +414,7 @@ int des_prog(){
     return FALSE;
   }
   if(!strcmp(token, "scope")){ // 1
-    initTable(vartable);
+    initTable(vartable); // Vytvoření tabulky pro scope
     return (des_KEYWORD("\n") && des_sc_list() && des_prog());
   } else if(!strcmp(token, "declare")){ // 25
     if(!des_KEYWORD("function")) return FALSE;
@@ -417,7 +426,7 @@ int des_prog(){
         return FALSE;
       }
       int tok_type = des_TTYPE();
-      int fn_type;
+      int fn_type; // Zjištění typu funkce
       if(tok_type == INTEGER) fn_type = 1;
       else if(tok_type == DOUBLE) fn_type = 2;
       else if(tok_type == STRING) fn_type = 3;
@@ -425,27 +434,22 @@ int des_prog(){
         free(label);
         return FALSE;
       }
-      if(tSearch(fntable, label) != NULL){
+      if(tSearch(fntable, label) != NULL){ // Vyhledávání v tabulce
         if(!error) error = DIM_ERR;
         fprintf(stderr, "Vícenásobná deklarace funkce '%s'\n", label);
         free(label);
         return FALSE;
-      }
+      } // Pokud neexistuje, vložení do tabulky
       tInsert(fntable, label, 1, "id", fn_type);
       free(label);
       return (des_KEYWORD("\n") && des_prog());
     } else return FALSE;
-
-
-    /*return (des_KEYWORD("function") && (des_TTYPE() == ID) && des_KEYWORD("(") && des_par_list() && des_KEYWORD("as") && (des_TTYPE() == (INTEGER || DOUBLE || STRING)) && des_KEYWORD("\n") && des_prog());
-    */
   } else if(!strcmp(token, "function")){ // 30
-    initTable(vartable);
-
+    initTable(vartable); // Tabulka pro funkci
     if(des_TTYPE() == ID){
       tklic label = (tklic) malloc(strlen(token)+1);
       strcpy(label, token);
-      if(!des_KEYWORD("(") || !des_par_list(TRUE) || !des_KEYWORD("as")){
+      if(!des_KEYWORD("(") || !des_par_list(TRUE) || !des_KEYWORD("as")){ // Uloží parametry jako proměnné
         free(label);
         return FALSE;
       }
@@ -472,9 +476,6 @@ int des_prog(){
       free(label);
       return (des_KEYWORD("\n") && des_func_list() && des_prog());
     } else return FALSE;
-
-
-    /*return ((des_TTYPE() == ID) && des_KEYWORD("(") && des_par_list() && des_KEYWORD("as") && (tok_type = des_TTYPE()) && ((tok_type == INTEGER) || (tok_type == DOUBLE) || (tok_type == STRING)) && des_KEYWORD("\n") && des_func_list() && des_prog());*/
   } else if(!strcmp(token, "\0")){ // 33
     return TRUE;
   } else if(!strcmp(token, "\n")){
@@ -483,6 +484,7 @@ int des_prog(){
   return FALSE;
 }
 
+// Rekurzivní sestup
 int descent(){
   int result = des_prog();
   if(!result) return 2;
@@ -490,21 +492,25 @@ int descent(){
 }
 
 int main(int argc, char *argv[]){
-  create_table();
-  row = 1;
+  create_table(); // Vytvoření precedenční tabulky
+  row = 1; // 1. řádek
+  // Inicializace tabulek
   vartable = malloc(max_size*sizeof(thitem*));
   fntable = malloc(max_size*sizeof(thitem*));
   initTable(fntable);
+  // Vložení vestavěných funkcí
   tInsert(fntable, "substr", 3, "id", 3);
   tInsert(fntable, "length", 3, "id", 1);
   tInsert(fntable, "asc", 3, "id", 1);
   tInsert(fntable, "chr", 3, "id", 3);
+  // Ověření příkazové řádky
   if(argc != 1){
     fprintf(stderr, "99: Chybný počet parametrů!\n");
     return 99;
   }
-  int result = descent();
+  int result = descent(); // Spuštění analýzy
   if(!error) error = result;
+  // Uvolnění paměti
   tClearall(vartable);
   tClearall(fntable);
   free(vartable);
