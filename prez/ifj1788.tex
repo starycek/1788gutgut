@@ -1,0 +1,98 @@
+\documentclass[11pt]{beamer}
+\usepackage[czech]{babel}
+\usepackage[latin2]{inputenc}
+\usepackage[IL2]{fontenc}
+\usepackage{graphics}
+\usepackage{lmodern}
+\usepackage{textcomp}
+
+\usetheme{Madrid}
+\setbeamertemplate{itemize items}[circle]
+
+\title[Projekt z IFJ a IAL]{\textbf{\huge Projekt z IFJ a IAL}}
+\subtitle{Pøekladaè jazyka IFJ17}
+\author[Skupina 88]{\textbf{Daniel ©vub, Daniel Poisl, Filip Weigel, Jan Zwierz}}
+\institute[FIT VUT v Brnì]{Fakulta informaèních technologií\\Vysoké uèení technické v Brnì}
+\date[2017]{\today}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}
+\frametitle{Zadání}
+\begin{itemize}
+\item{Gramatika}
+\item{Lexikální analýza}
+\item{Syntaktická a sémantická analýza}
+\item{Pøeklad do jazyka IFJcode17}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Implementace}
+\textbf{Scanner}\\
+implementován Filipem Weigelem a Danielem Poislem
+\bigskip
+\begin{itemize}
+\item{Ètení znakù ze stdin}
+\item{Zpracování vstupu pomocí koneèného automatu}
+\item{Rozpoznávání lexémù a jejich odesílání parseru}
+\item{Vracení návratové hodnoty}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Implementace}
+\textbf{Parser}\\
+implementován Danielem ©vubem
+\begin{itemize}
+\item{Syntaktická analýza rekurzívním sestupem}
+\item{Analýza výrazù pomocí PSA}
+\item{Kontrola správné deklarace promìnných}
+\item{Kontrola správné definice funkcí}
+\item{Chyby}
+\end{itemize}
+\bigskip
+%\scalebox{0.4}{\includegraphics{./hamlet.eps}}
+\end{frame}
+
+\begin{frame}
+\frametitle{Datové struktury}
+\framesubtitle{Jako základ pou¾ity úlohy z pøedmìtu IAL}
+\textbf{Zásobník}\\
+upraven a doimplementován Danielem ©vubem
+\bigskip
+\begin{itemize}
+\item{Ovládání PSA}
+\item{Nalezení nejvy¹¹ího terminálu v zásobníku}
+\item{Redukce}
+\end{itemize}
+\bigskip
+%\scalebox{0.3}{\includegraphics{./type.eps}}
+\end{frame}
+
+\begin{frame}
+\frametitle{Datové struktury}
+\framesubtitle{Jako základ pou¾ity úlohy z pøedmìtu IAL}
+\textbf{Tabulka symbolù}\\
+implementována jako tabulka s rozptýlenými polo¾kami\\
+upravena Danielem Poislem
+\bigskip
+\begin{itemize}
+\item{Ukládání identifikátorù a datových typù}
+\item{Kontrola poètu deklarací a definic}
+\item{Parserem vyu¾ívána jako tabulka promìnných a funkcí}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Závìr}
+\begin{itemize}
+\item{Projekt se nepodaøilo dokonèit}
+\item{Dùvody jsou popsány v dokumentaci}
+\item{Nìkteré stávající èásti obsahují chyby}
+\end{itemize}
+\end{frame}
+
+\end{document}
